@@ -17,7 +17,7 @@ COPY . .
 RUN npm run build
 
 # Start the Next.js app
-CMD ["npm", "start"]
+CMD ["npm","run","start"]
 
 # Expose port 3000
 EXPOSE 3000
