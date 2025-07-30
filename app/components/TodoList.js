@@ -20,14 +20,12 @@ function TodoList({ todos, deletelist, toggleComplete }) {
             <input
               type="checkbox"
               checked={todo.completed}
-              onChange={() => toggleComplete(index)}
+              onChange={() => toggleComplete(todo._id, todo.completed)}
             />
             <span
-              style={{
-                textDecoration: todo.completed ? "line-through" : "none",
-              }}
+              className={`${todo.completed ? "line-through" : ""} flex-1 mr-4`}
             >
-              {todo.text}
+              {todo.title}
             </span>
             <button
               style={{
@@ -35,7 +33,7 @@ function TodoList({ todos, deletelist, toggleComplete }) {
                 padding: 10,
                 borderRadius: 5,
               }}
-              onClick={() => deletelist(index)}
+              onClick={() => deletelist(todo._id)}
             >
               delete
             </button>

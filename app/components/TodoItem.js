@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import TodoList from "./TodoList";
 import FilterBar from "./FilterBar";
 
@@ -8,6 +8,10 @@ function TodoItem() {
   const [todo, setTodo] = useState("");
   const [filter, setFilter] = useState("all"); // all | completed | incomplete
 
+  useEffect(() => {
+    fetchTodos();
+  }, []);
+
   let filteredTodos = todos;
 
   if (filter === "completed") {
@@ -15,27 +19,64 @@ function TodoItem() {
   } else if (filter === "incomplete") {
     filteredTodos = todos.filter((todo) => !todo.completed);
   }
+  
 
-  function toggleComplete(index) {
-    setTodos((prev) =>
-      prev.map((todo, i) =>
-        i === index ? { ...todo, completed: !todo.completed } : todo
-      )
-    );
+  async function fetchTodos() {
+    const url = `${process.env.NEXT_PUBLIC_SITE_URL}/getTaskList`    
+    const res = await fetch(url);
+    const data = await res.json();
+    setTodos(data.data);
   }
 
-  function handleAdd() {
-    if (!todo.trim()) return; // prevent empty todos
-    setTodos((prev) => [...prev, { text: todo, completed: false }]);
+  async function toggleComplete(id, status) {
+    console.log({ id, status });
+
+    // setTodos((prev) =>
+    //   prev.map((todo, i) =>
+    //     i === index ? { ...todo, completed: !todo.completed } : todo
+    //   )
+    // );
+
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/updateTask`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, completed: !status }),
+    });
+    console.log({ res });
+    fetchTodos();
+  }
+
+  async function handleAdd() {
+    if (!todo.trim()) return;
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/setTask`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title: todo }),
+    });
+
+    const data = await res.json();
     setTodo("");
+    fetchTodos();
   }
 
-  function deletelist(index) {
-    setTodos(todos.filter((data, i) => i !== index));
+  async function deletelist(id) {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/deleteTask`, {
+      method: "DELETE",
+      body: JSON.stringify({ id }),
+    });
+    console.log("res of delete", res);
+    fetchTodos();
   }
 
   return (
-    <div style={{ borderWidth: 1, borderColor: "black" , padding:50, borderRadius :10, }}>
+    <div
+      style={{
+        borderWidth: 1,
+        borderColor: "black",
+        padding: 50,
+        borderRadius: 10,
+      }}
+    >
       <div style={{ flexDirection: "row" }}>
         <h1
           style={{ color: "black", display: "flex", justifyContent: "center" }}
