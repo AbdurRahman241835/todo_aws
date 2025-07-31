@@ -22,7 +22,7 @@ function TodoItem() {
   
 
   async function fetchTodos() {
-    const url = `${process.env.NEXT_PUBLIC_SITE_URL}/api/getTaskList`;
+    const url = `api/getTaskList`;
     const res = await fetch(url);
     const data = await res.json();
     console.log("fetch todos response", res.status);
@@ -39,7 +39,7 @@ function TodoItem() {
     //   )
     // );
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/updateTask`, {
+    const res = await fetch(`/api/updateTask`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, completed: !status }),
@@ -50,7 +50,7 @@ function TodoItem() {
 
   async function handleAdd() {
     if (!todo.trim()) return;
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/setTask`, {
+    const res = await fetch(`/api/setTask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: todo }),
@@ -64,7 +64,7 @@ function TodoItem() {
   }
 
   async function deletelist(id) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/deleteTask`, {
+    const res = await fetch(`/api/deleteTask`, {
       method: "DELETE",
       body: JSON.stringify({ id }),
     });
