@@ -22,9 +22,11 @@ function TodoItem() {
   
 
   async function fetchTodos() {
-    const url = `${process.env.NEXT_PUBLIC_SITE_URL}/getTaskList`    
+    const url = `${process.env.NEXT_PUBLIC_SITE_URL}/api/getTaskList`;
     const res = await fetch(url);
     const data = await res.json();
+    console.log("fetch todos response", res.status);
+    
     setTodos(data.data);
   }
 
@@ -37,34 +39,36 @@ function TodoItem() {
     //   )
     // );
 
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/updateTask`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/updateTask`, {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, completed: !status }),
     });
-    console.log({ res });
+    console.log({ res_of_toggleComplate: res.status });
     fetchTodos();
   }
 
   async function handleAdd() {
     if (!todo.trim()) return;
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/setTask`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/setTask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ title: todo }),
     });
 
     const data = await res.json();
+    console.log("res of add", res.status);
+    
     setTodo("");
     fetchTodos();
   }
 
   async function deletelist(id) {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/deleteTask`, {
+    const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/deleteTask`, {
       method: "DELETE",
       body: JSON.stringify({ id }),
     });
-    console.log("res of delete", res);
+    console.log("res of delete", res.status);
     fetchTodos();
   }
 
